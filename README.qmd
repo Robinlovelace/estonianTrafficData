@@ -62,3 +62,14 @@ Let's see how well the IDs of the locations matches the IDs from the traffic dat
 ```{r}
 summary(locations$`Connection ID` %in% unique_counters)
 ```
+
+Let's plot the locations on a map:
+
+
+```{r}
+#| label: locations
+locations_geo = sf::st_as_sf(locations, coords = c("Lon", "Lat"))
+map = tmap::qtm(locations_geo)
+tmap::tmap_save(map, "map.html")
+webshot2::webshot("map.html")
+```

@@ -32,8 +32,10 @@ list.files()
 
     [1] "d0cc4ba5-9a4d-448c-b268-bfb5e7b71537-LL-meta.xlsx.csv"
     [2] "e501fb9b-4a71-453f-9d7f-bb5e819ee692-ll_2024.csv.csv" 
-    [3] "README.qmd"                                           
-    [4] "README.rmarkdown"                                     
+    [3] "map.html"                                             
+    [4] "README.md"                                            
+    [5] "README.qmd"                                           
+    [6] "README.rmarkdown"                                     
 
 ``` r
 f = "e501fb9b-4a71-453f-9d7f-bb5e819ee692-ll_2024.csv.csv"
@@ -118,3 +120,19 @@ summary(locations$`Connection ID` %in% unique_counters)
 
        Mode   FALSE    TRUE 
     logical       3     115 
+
+Let’s plot the locations on a map:
+
+``` r
+locations_geo = sf::st_as_sf(locations, coords = c("Lon", "Lat"))
+map = tmap::qtm(locations_geo)
+tmap::tmap_save(map, "map.html")
+```
+
+    Interactive map saved to /home/robin/github/robinlovelace/estonianTrafficData/map.html
+
+``` r
+webshot2::webshot("map.html")
+```
+
+![](README_files/figure-commonmark/locations-1.png)
