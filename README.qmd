@@ -1,0 +1,64 @@
+---
+title: Open Estonian Traffic count datasets
+format: gfm
+---
+
+At the Mobile Tartu in Estonia I learned about the country's strong open data in general, and open traffic count data in particular.
+A quick search, via their open data repository, led here: https://avaandmed.eesti.ee/datasets/liiklusloenduse-andmed
+
+We'll use the tidyverse:
+
+```{r}
+library(tidyverse)
+```
+
+Let's try to download some data, starting with the following:
+
+
+```{r}
+list.files()
+f = "e501fb9b-4a71-453f-9d7f-bb5e819ee692-ll_2024.csv.csv"
+if (!file.exists(f)) {
+    stop("Go to the portal and download the data")
+}
+```
+
+You also need to download the traffic location data:
+
+```{r}
+locations = read_csv("d0cc4ba5-9a4d-448c-b268-bfb5e7b71537-LL-meta.xlsx.csv")
+# # A tibble: 118 × 7
+#    Name                   `Connection ID` `Road nr` `Road km` County   Lon   Lat
+#    <chr>                  <chr>               <dbl>     <dbl> <chr>  <dbl> <dbl>
+#  1 LOO 1_13236 VBV        0cfcf                   1      13.2 Harju…  25.0  59.4
+#  2 PRÜGILA RIST 1_17794 … 25785                   1      17.8 Harju…  25.0  59.5
+#  3 KODASOO 1_32100 VBV    077a6                   1      32.1 Harju…  25.3  59.4
+#  4 VIITNA 1_73241 VBV     67241                   1      73.2 Lääne…  26.0  59.5
+#  5 SÄMI 1_109455 VBV      387ad                   1     109.  Lääne…  26.6  59.4
+#  6 VARJA 1_146054 VBV     748fe                   1     146.  Ida-V…  27.1  59.4
+#  7 KUKRUSE 1_158295 VBV   5e92d                   1     158.  Ida-V…  27.3  59.4
+#  8 KONJU 1_176970 VBV     180b3                   1     177.  Ida-V…  27.6  59.4
+#  9 SINIMÄE 1_194738 VBV   91e72                   1     195.  Ida-V…  27.9  59.4
+# 10 PEETRI 2_7050 VBV      0f55c                   2       7   Harju…  24.8  59.4
+# # ℹ 108 more rows
+# # ℹ Use `print(n = ...)` to see more rows
+```
+
+
+```{r}
+traffic_data = read_csv(f)
+names(traffic_data)
+#  [1] "1"        "2"        "3"        "4"        "5"        "6"       
+#  [7] "7"        "8"        "9"        "10"       "id"       "kanal"   
+# [13] "aeg"      "<40Kph"   "40-<50"   "50-<60"   "60-<70"   "70-<80"  
+# [19] "80-<90"   "90-<100"  "100-<110" "110-<120" "120-<130" "=>130"
+unique_counters = unique(traffic_data$id)
+length(unique_counters) # 116
+```
+
+Let's see how well the IDs of the locations matches the IDs from the traffic data
+
+
+```{r}
+summary(locations$`Connection ID` %in% unique_counters)
+```
